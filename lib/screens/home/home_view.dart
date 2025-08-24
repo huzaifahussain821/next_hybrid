@@ -3,17 +3,24 @@ import 'dart:convert';
 import 'package:purpose_payment/api_services/home_service.dart';
 import 'package:purpose_payment/screens/login_view/widgets/signin_button.dart';
 import 'package:purpose_payment/utilities/app_exports.dart';
+import 'package:purpose_payment/utilities/app_preferences.dart';
 import 'package:purpose_payment/widgets/custom_text.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+  final String? view;
+
+  const HomeView({super.key, this.view});
 
   @override
   State<HomeView> createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
+///////////////////////////// Update Auto List API Call ////////////////////////////
+  String? fileId; // for edit mode
+  TextEditingController titleController = TextEditingController();
+
 //////////////////////////////////
   bool isLoading = false;
 
@@ -56,12 +63,37 @@ class _HomeViewState extends State<HomeView> {
 
   DateTime? _lastCommandTime;
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _pageController = PageController();
+  //   _controllers = [TextEditingController()];
+  //   _speech = stt.SpeechToText();
+  // }
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
     _controllers = [TextEditingController()];
     _speech = stt.SpeechToText();
+
+    // 👇 Check if it's edit mode
+    if (widget.view == "edit") {
+      final file = Get.arguments;
+      fileId = file.id.toString();
+      titleController.text = file.title ?? "";
+
+      // Pre-fill title & items
+      titleController.text = file.title ?? "";
+      _controllers = file.items
+          .map<TextEditingController>(
+              (item) => TextEditingController(text: item))
+          .toList();
+
+      if (_controllers.isEmpty) {
+        _controllers = [TextEditingController()];
+      }
+    }
   }
 
   void _handleVoiceCommand(String command) {
@@ -207,8 +239,8 @@ class _HomeViewState extends State<HomeView> {
 
                         // Save button
                         SignInButton(
-                          text: "Create",
-                          onPressed: () {
+                          text: widget.view == "edit" ? "Update" : "Create",
+                          onPressed: () async {
                             String title = titleController.text.trim();
 
                             if (title.isNotEmpty) {
@@ -218,9 +250,41 @@ class _HomeViewState extends State<HomeView> {
                                   .toList();
 
                               if (items.isNotEmpty) {
-                                createAutoList(title, items);
+                                if (widget.view == "edit" && fileId != null) {
+                                  // 🔥 Call Edit API
+                                  final data = {
+                                    "title": title,
+                                    "items": jsonEncode(items),
+                                  };
+                                  final response =
+                                      await HomeService.editAutoListApi(fileId!,
+                                          data, AppPreferences.authToken);
 
-                                Future.delayed(const Duration(seconds: 1), () {
+                                  if (response != null) {
+                                    Get.snackbar(
+                                      "Success",
+                                      "Auto List Updated Successfully",
+                                      backgroundColor: Colors.green,
+                                      colorText: Colors.white,
+                                    );
+
+                                    titleController.clear();
+                                    for (var c in _controllers) {
+                                      c.clear();
+                                    }
+                                    setState(() {
+                                      _controllers = [
+                                        TextEditingController()
+                                      ]; // reset with one field
+                                    });
+                                  }
+                                } else {
+                                  // Existing create
+                                  await createAutoList(title, items);
+                                }
+
+                                Future.delayed(
+                                    const Duration(milliseconds: 600), () {
                                   Navigator.pop(context);
                                 });
                               } else {
@@ -231,7 +295,34 @@ class _HomeViewState extends State<HomeView> {
                               }
                             }
                           },
-                        )
+                        ),
+
+                        // SignInButton(
+                        //   text: "Create",
+                        //   onPressed: () {
+                        //     String title = titleController.text.trim();
+
+                        //     if (title.isNotEmpty) {
+                        //       List<String> items = _controllers
+                        //           .map((c) => c.text.trim())
+                        //           .where((text) => text.isNotEmpty)
+                        //           .toList();
+
+                        //       if (items.isNotEmpty) {
+                        //         createAutoList(title, items);
+
+                        //         Future.delayed(const Duration(seconds: 1), () {
+                        //           Navigator.pop(context);
+                        //         });
+                        //       } else {
+                        //         Get.snackbar(
+                        //             "Warning", "Please add at least one item",
+                        //             backgroundColor: Colors.red,
+                        //             colorText: Colors.white);
+                        //       }
+                        //     }
+                        //   },
+                        // )
                       ],
                     ),
                   );

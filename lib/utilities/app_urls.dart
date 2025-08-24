@@ -15,6 +15,7 @@ class AppUrls {
   static const String getSavedFilesApi = "/api/saved-files/list";
   static const String deleteSavedFileApi =
       "/api/saved-files/autolist/delete/{id}";
+  static const String editAutoListApi = "/api/saved-files/autolist/update/{id}";
 
   // static const String getDemographicsDropdownApi = "/api/public/dropdowns";
   // static const String getAllAvatarsApi = "/api/avatars";

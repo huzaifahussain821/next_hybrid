@@ -30,4 +30,21 @@ class HomeService {
 
     return GeneralResponseModel.fromJson(res.data);
   }
+
+  static Future<GeneralResponseModel?> editAutoListApi(
+    String id,
+    Map<String, dynamic> data,
+    String token,
+  ) async {
+    final endpoint =
+        AppUrls.editAutoListApi.replaceFirst("{id}", id.toString());
+
+    final res = await ApiClient().post(
+      endpoint,
+      data: data,
+      token: token, // pass token here
+    );
+
+    return GeneralResponseModel.fromJson(res.data);
+  }
 }

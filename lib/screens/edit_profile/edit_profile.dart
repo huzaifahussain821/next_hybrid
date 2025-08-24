@@ -1,6 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:purpose_payment/api_services/profile_services.dart';
-import 'package:purpose_payment/screens/edit_profile/model/get_profile_model.dart';
 import 'package:purpose_payment/screens/profile_view/profile_controller.dart';
 import 'package:purpose_payment/utilities/app_exports.dart';
 import 'package:purpose_payment/widgets/custom_text.dart';
@@ -27,6 +25,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
     return Scaffold(
       backgroundColor: AppThemes.primaryColor,
+      appBar: AppBarWidget.WithoutBackAppBar("Profile"),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(
@@ -46,7 +45,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
-                AppBarWidget.WithoutBackAppBar("Profile"),
+                // AppBarWidget.WithoutBackAppBar("Profile"),
 
                 // Profile image
                 GestureDetector(

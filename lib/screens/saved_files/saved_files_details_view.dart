@@ -1,3 +1,4 @@
+import 'package:purpose_payment/screens/home/home_view.dart';
 import 'package:purpose_payment/utilities/app_exports.dart';
 import 'package:purpose_payment/widgets/custom_text.dart';
 
@@ -15,7 +16,17 @@ class SavedFilesDetailsView extends StatelessWidget {
     final file = Get.arguments;
 
     return Scaffold(
-      appBar: AppBarWidget.backAppBar("Saved Files Details"),
+      appBar: AppBarWidget.backAppBar("Saved Files Details",
+          actionWidget: Row(
+            children: [
+              GestureDetector(
+                  onTap: () {
+                    Get.to(() => const HomeView(view: "edit"), arguments: file);
+                  },
+                  child: Icon(Icons.edit, color: Colors.black)),
+              SizedBox(width: 8),
+            ],
+          )),
       backgroundColor: AppThemes.primaryColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
