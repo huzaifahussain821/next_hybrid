@@ -1,0 +1,26 @@
+// import 'package:get/get.dart';
+// import 'package:purpose_payment/models/get_profile_model.dart';
+// import 'package:purpose_payment/services/auth_service.dart';
+
+// class MyProfController extends GetxController{
+//   //   var isLoading = false.obs;
+//   // var profile = Rxn<GetProfileModel>();
+
+//   // // Fetch profile function
+//   // Future<void> fetchProfile() async {
+//   //   try {
+//   //     isLoading.value = true;
+
+//   //     final result = await AuthService.getProfileApi();
+//   //     if (result != null) {
+//   //       profile.value = result;
+//   //     } else {
+//   //       Get.snackbar("Error", "Failed to fetch profile data");
+//   //     }
+//   //   } catch (e) {
+//   //     Get.snackbar("Error", "Something went wrong: $e");
+//   //   } finally {
+//   //     isLoading.value = false;
+//   //   }
+//   // }
+// }
