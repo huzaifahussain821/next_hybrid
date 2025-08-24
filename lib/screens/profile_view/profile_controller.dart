@@ -76,7 +76,10 @@ class ProfileController extends GetxController {
             }
 
             Get.snackbar(
-                "Success", response.message ?? "Profile created successfully");
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                "Success",
+                response.message ?? "Profile created successfully");
 
             Get.offAll(() => DashboardView());
           }
