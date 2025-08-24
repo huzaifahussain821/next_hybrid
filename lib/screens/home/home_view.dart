@@ -123,7 +123,7 @@ class _HomeViewState extends State<HomeView> {
       // Animate to the updated _currentPage
       _pageController.animateToPage(
         _currentPage,
-        duration: const Duration(milliseconds: 300 ),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     }
