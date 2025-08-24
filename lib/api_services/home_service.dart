@@ -1,18 +1,33 @@
+import 'package:purpose_payment/models/general_response_model.dart';
+import 'package:purpose_payment/screens/saved_files/model/get_saved_files_model.dart';
+import 'package:purpose_payment/utilities/app_preferences.dart';
 
-// import '../api_core/api_client.dart';
-// import '../features/home/model/get_discovery_match_users_model.dart';
-// import '../utilities/app_urls.dart';
+import '../api_core/api_client.dart';
+import '../utilities/app_urls.dart';
 
-// class HomeService {
-//   static Future<GetDiscoveryMatchUsersModel> fetchUserMatches({
-//     required String type,
-//     required int limit,
-//     required int page,
-//   }) async {
-//     final response = await ApiClient().get(
-//       AppUrls.getDiscoveryOrMatchUsersApi,
-//       queryParameters: {'type': type, 'limit': limit, 'page': page},
-//     );
-//     return GetDiscoveryMatchUsersModel.fromJson(response.data);
-//   }
-// }
+class HomeService {
+  static Future<GeneralResponseModel?> createAutoListApi(
+    Map<String, dynamic> data,
+  ) async {
+    final res = await ApiClient().post(AppUrls.createAutoListApi, data: data);
+    return GeneralResponseModel.fromJson(res.data);
+  }
+
+  static Future<GetSavedFilesModel?> getSavedFilesApi() async {
+    final res = await ApiClient().get(AppUrls.getSavedFilesApi);
+    return GetSavedFilesModel.fromJson(res.data);
+  }
+
+  static Future<GeneralResponseModel?> deleteSavedFileApi(
+      String id, String token) async {
+    final endpoint =
+        AppUrls.deleteSavedFileApi.replaceFirst("{id}", id.toString());
+
+    final res = await ApiClient().delete(
+      endpoint,
+      token: token, // 🔑 pass token here
+    );
+
+    return GeneralResponseModel.fromJson(res.data);
+  }
+}

@@ -1,7 +1,7 @@
 import 'package:purpose_payment/screens/examples/examples_view.dart';
 import 'package:purpose_payment/screens/home/home_view.dart';
 import 'package:purpose_payment/screens/notification/notification_view.dart';
-import 'package:purpose_payment/screens/saved_files/saved_files.dart';
+import 'package:purpose_payment/screens/saved_files/saved_files_view.dart';
 import 'package:purpose_payment/screens/tutorial/tutorial_view.dart';
 import 'package:purpose_payment/utilities/app_exports.dart';
 

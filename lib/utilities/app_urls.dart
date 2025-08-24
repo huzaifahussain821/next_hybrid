@@ -1,5 +1,6 @@
 class AppUrls {
-  static const String baseUrl = 'https://server1.appsstaging.com/3559/Next/public';
+  static const String baseUrl =
+      'https://server1.appsstaging.com/3559/Next/public';
   static const String mediaBaseUrl =
       'https://stumbleapps.s3.me-central-1.amazonaws.com';
   static const String loginApi = "/api/auth/login";
@@ -10,7 +11,11 @@ class AppUrls {
   static const String resendOtpApi = "/api/auth/resend-otp";
   static const String getProfileApi = "/api/profile/user";
   static const String logoutApi = "/api/profile/logout";
-  
+  static const String createAutoListApi = "/api/autolist/create";
+  static const String getSavedFilesApi = "/api/saved-files/list";
+  static const String deleteSavedFileApi =
+      "/api/saved-files/autolist/delete/{id}";
+
   // static const String getDemographicsDropdownApi = "/api/public/dropdowns";
   // static const String getAllAvatarsApi = "/api/avatars";
   // static const String setAvatarApi = "/api/users/profile/avatar";
@@ -36,8 +41,4 @@ class AppUrls {
   // static const String postImageToProfileApi = "/api/gallery";
   // static const String getAllGalleryImages = "/api/gallery";
   // static const String getAllGalleryImagesById = "/api/gallery";
-
-
-
-
 }
