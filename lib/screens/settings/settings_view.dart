@@ -1,8 +1,10 @@
 import 'package:purpose_payment/dialog/delete_dialogbox.dart';
 import 'package:purpose_payment/dialog/logout_dialogbox.dart';
 import 'package:purpose_payment/screens/aboutus/aboutus.dart';
+import 'package:purpose_payment/screens/privacy_policy/privacy_policy.dart';
 import 'package:purpose_payment/screens/profile_view/profile_view.dart';
 import 'package:purpose_payment/screens/termandconditions/terms_and_condition.dart';
+import 'package:purpose_payment/screens/userguide/userguide.dart';
 import 'package:purpose_payment/utilities/app_exports.dart';
 import 'package:purpose_payment/widgets/primary_button.dart';
 
@@ -29,7 +31,7 @@ class SettingsView extends StatelessWidget {
             PrimaryButton(
                 text: "User Guide",
                 onPressed: () {
-                  // Get.to(() => const UserGuideScreen());
+                  Get.to(() => const UserguideView());
                 }),
             10.verticalSpace,
             PrimaryButton(
@@ -40,7 +42,11 @@ class SettingsView extends StatelessWidget {
                       ));
                 }),
             10.verticalSpace,
-            PrimaryButton(text: "Privacy Policies", onPressed: () {}),
+            PrimaryButton(
+                text: "Privacy Policies",
+                onPressed: () {
+                  Get.to(() => const PrivacyPolicyView());
+                }),
             10.verticalSpace,
             PrimaryButton(
                 text: "Terms and Conditions",

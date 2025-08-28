@@ -104,8 +104,8 @@ class SavedFileContainerWidget extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: backgroundColor ?? const Color(0xFFF4F0E9),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        side: const BorderSide(color: Color(0xFFDC6D02)),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        side: const BorderSide(color: AppThemes.darkGreyColor),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),

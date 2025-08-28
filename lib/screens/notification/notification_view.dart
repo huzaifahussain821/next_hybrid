@@ -65,9 +65,9 @@ class NotificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppThemes.primaryColor,
+      appBar: AppBarWidget.backAppBar("Notifications"),
       body: Column(
         children: [
-          AppBarWidget.backAppBar("Notifications"),
           Expanded(
             child: Obx(() => ListView.builder(
                   padding: const EdgeInsets.all(8),

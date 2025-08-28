@@ -1,3 +1,4 @@
+import 'package:purpose_payment/screens/autolist_view/autolist_view.dart';
 import 'package:purpose_payment/screens/examples/examples_view.dart';
 import 'package:purpose_payment/screens/home/home_view.dart';
 import 'package:purpose_payment/screens/notification/notification_view.dart';
@@ -129,7 +130,8 @@ class AutoListHome extends StatelessWidget {
                     Positioned(
                       child: GestureDetector(
                         onTap: () {
-                          Get.to(() => const HomeView());
+                          Get.to(() => const AutolistView());
+                          // Get.to(() => const HomeView());
                         },
                         child: Image.asset(
                           AssetsPath.centre,

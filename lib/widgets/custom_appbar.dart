@@ -92,18 +92,40 @@ class AppBarWidget {
               Get.back();
             },
             child: Container(
-                padding: EdgeInsets.zero,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppThemes.black, width: 1),
-                ),
-                child: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: AppThemes.black,
-                  size: 15,
-                )),
+              width: 30,
+              height: 30,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius:
+                    BorderRadius.circular(2), // square with slight curve
+                border: Border.all(color: AppThemes.black, width: 1),
+              ),
+              child: const Icon(
+                Icons.arrow_back,
+                color: AppThemes.black,
+                size: 20,
+              ),
+            ),
           ),
+
+          // leading: GestureDetector(
+          //   onTap: () {
+          //     Get.back();
+          //   },
+          //   child: Container(
+          //       padding: EdgeInsets.zero,
+          //       decoration: BoxDecoration(
+          //         color: Colors.white,
+          //         shape: BoxShape.circle,
+          //         border: Border.all(color: AppThemes.black, width: 1),
+          //       ),
+          //       child: const Icon(
+          //         Icons.arrow_back_ios_new,
+          //         color: AppThemes.black,
+          //         size: 15,
+          //       )),
+          // ),
           centerTitle: true,
           title: titleWidget ??
               CustomTextWidget(

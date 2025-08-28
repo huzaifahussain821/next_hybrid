@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:purpose_payment/api_services/home_service.dart';
+import 'package:purpose_payment/dialog/share_dialogbox.dart';
 import 'package:purpose_payment/screens/login_view/widgets/signin_button.dart';
 import 'package:purpose_payment/utilities/app_exports.dart';
 import 'package:purpose_payment/utilities/app_preferences.dart';
@@ -330,7 +331,12 @@ class _HomeViewState extends State<HomeView> {
               );
             }),
             const SizedBox(width: 8),
-            _topContainer("Share", () {}),
+            _topContainer("Share", () {
+              showDialog(
+                context: context,
+                builder: (context) => const ShareDialog(),
+              );
+            }),
             const SizedBox(width: 8),
             _topContainer("Language", () {}),
           ],
