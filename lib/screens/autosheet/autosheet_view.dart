@@ -9,27 +9,31 @@ import 'package:purpose_payment/utilities/app_exports.dart';
 import 'package:purpose_payment/utilities/app_preferences.dart';
 import 'package:purpose_payment/widgets/custom_appbar.dart';
 import 'package:purpose_payment/widgets/custom_text.dart';
-import 'package:purpose_payment/widgets/custom_text_field.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
-class AutolistView extends StatefulWidget {
+class AutosheetView extends StatefulWidget {
   final String? view;
 
-  const AutolistView({super.key, this.view});
+  const AutosheetView({super.key, this.view});
 
   @override
-  State<AutolistView> createState() => _AutolistViewState();
+  State<AutosheetView> createState() => _AutosheetViewState();
 }
 
-class _AutolistViewState extends State<AutolistView> {
+class _AutosheetViewState extends State<AutosheetView> {
   String? fileId;
   TextEditingController titleController = TextEditingController();
-  List<TextEditingController> _controllers = [];
-  List<FocusNode> _focusNodes = [];
+
+  List<TextEditingController> _nameControllers = [];
+  List<TextEditingController> _quantityControllers = [];
+  List<FocusNode> _nameFocusNodes = [];
+  List<FocusNode> _quantityFocusNodes = [];
 
   late stt.SpeechToText _speech;
   bool _isListening = false;
-  int _currentIndex = 0;
+
+  int _currentRow = 0;
+  bool _onNameField = true;
 
   DateTime? _lastCommandTime;
 
@@ -38,29 +42,39 @@ class _AutolistViewState extends State<AutolistView> {
     super.initState();
     _speech = stt.SpeechToText();
 
-    _controllers = [TextEditingController()];
-    _focusNodes = [FocusNode()];
+    _addRow(); // start with one row
 
     if (widget.view == "edit") {
       final file = Get.arguments;
       fileId = file.id.toString();
       titleController.text = file.title ?? "";
 
-      _controllers = file.items
+      _nameControllers = file.items
           .map<TextEditingController>(
               (item) => TextEditingController(text: item))
           .toList();
 
-      _focusNodes = List.generate(_controllers.length, (_) => FocusNode());
+      _quantityControllers = List.generate(
+          _nameControllers.length, (_) => TextEditingController());
 
-      if (_controllers.isEmpty) {
-        _controllers = [TextEditingController()];
-        _focusNodes = [FocusNode()];
-      }
+      _nameFocusNodes =
+          List.generate(_nameControllers.length, (_) => FocusNode());
+      _quantityFocusNodes =
+          List.generate(_nameControllers.length, (_) => FocusNode());
     }
   }
 
-  Future<void> createAutoList(String title, List<String> items) async {
+  void _addRow() {
+    setState(() {
+      _nameControllers.add(TextEditingController());
+      _quantityControllers.add(TextEditingController());
+      _nameFocusNodes.add(FocusNode());
+      _quantityFocusNodes.add(FocusNode());
+    });
+  }
+
+  Future<void> createAutoList(
+      String title, List<Map<String, String>> items) async {
     try {
       final data = {
         "title": title,
@@ -72,8 +86,10 @@ class _AutolistViewState extends State<AutolistView> {
       if (response != null) {
         Get.snackbar("Success", "Auto List Created Successfully",
             backgroundColor: Colors.green, colorText: Colors.white);
-
-        for (var c in _controllers) {
+        for (var c in _nameControllers) {
+          c.clear();
+        }
+        for (var c in _quantityControllers) {
           c.clear();
         }
       }
@@ -110,19 +126,19 @@ class _AutolistViewState extends State<AutolistView> {
       _speech.listen(
         onResult: (result) {
           String recognized = result.recognizedWords.toLowerCase();
-
           if (result.finalResult) {
             if (recognized.contains("next") ||
                 recognized.contains("back") ||
                 recognized.contains("stop")) {
               _handleVoiceCommand(recognized);
             } else {
-              _controllers[_currentIndex].text =
-                  "${_controllers[_currentIndex].text} ${result.recognizedWords}";
-              _controllers[_currentIndex].selection =
-                  TextSelection.fromPosition(
-                TextPosition(offset: _controllers[_currentIndex].text.length),
-              );
+              if (_onNameField) {
+                _nameControllers[_currentRow].text +=
+                    " ${result.recognizedWords}";
+              } else {
+                _quantityControllers[_currentRow].text +=
+                    " ${result.recognizedWords}";
+              }
             }
           }
         },
@@ -136,29 +152,33 @@ class _AutolistViewState extends State<AutolistView> {
   }
 
   void _goToNextField() {
-    if (_currentIndex < _controllers.length - 1) {
-      _currentIndex++;
-    } else {
-      setState(() {
-        _controllers.add(TextEditingController());
-        _focusNodes.add(FocusNode());
-        _currentIndex++;
-      });
-    }
-    FocusScope.of(context).requestFocus(_focusNodes[_currentIndex]);
+    setState(() {
+      if (_onNameField) {
+        _onNameField = false;
+        FocusScope.of(context).requestFocus(_quantityFocusNodes[_currentRow]);
+      } else {
+        _onNameField = true;
+        if (_currentRow < _nameControllers.length - 1) {
+          _currentRow++;
+        } else {
+          _addRow();
+          _currentRow++;
+        }
+        FocusScope.of(context).requestFocus(_nameFocusNodes[_currentRow]);
+      }
+    });
   }
 
   void _goToPreviousField() {
-    if (_currentIndex > 0) {
-      _currentIndex--;
-      FocusScope.of(context).requestFocus(_focusNodes[_currentIndex]);
-    }
-  }
-
-  void _addField() {
     setState(() {
-      _controllers.add(TextEditingController());
-      _focusNodes.add(FocusNode());
+      if (!_onNameField) {
+        _onNameField = true;
+        FocusScope.of(context).requestFocus(_nameFocusNodes[_currentRow]);
+      } else if (_currentRow > 0) {
+        _onNameField = false;
+        _currentRow--;
+        FocusScope.of(context).requestFocus(_quantityFocusNodes[_currentRow]);
+      }
     });
   }
 
@@ -186,10 +206,10 @@ class _AutolistViewState extends State<AutolistView> {
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        CustomTextField(
+                        TextField(
                           controller: dialogTitleController,
-                          hintText: 'Title',
-                          prefixIcon: Icons.title,
+                          decoration: const InputDecoration(
+                              hintText: "Title", prefixIcon: Icon(Icons.title)),
                         ),
                         const SizedBox(height: 20),
                         SignInButton(
@@ -197,10 +217,17 @@ class _AutolistViewState extends State<AutolistView> {
                           onPressed: () async {
                             String title = dialogTitleController.text.trim();
                             if (title.isNotEmpty) {
-                              List<String> items = _controllers
-                                  .map((c) => c.text.trim())
-                                  .where((text) => text.isNotEmpty)
-                                  .toList();
+                              List<Map<String, String>> items = [];
+                              for (int i = 0;
+                                  i < _nameControllers.length;
+                                  i++) {
+                                String name = _nameControllers[i].text.trim();
+                                String qty =
+                                    _quantityControllers[i].text.trim();
+                                if (name.isNotEmpty || qty.isNotEmpty) {
+                                  items.add({"name": name, "quantity": qty});
+                                }
+                              }
 
                               if (items.isNotEmpty) {
                                 if (widget.view == "edit" && fileId != null) {
@@ -208,38 +235,16 @@ class _AutolistViewState extends State<AutolistView> {
                                     "title": title,
                                     "items": jsonEncode(items),
                                   };
-                                  final response =
-                                      await HomeService.editAutoListApi(fileId!,
-                                          data, AppPreferences.authToken);
-
-                                  if (response != null) {
-                                    Get.snackbar(
-                                      "Success",
+                                  await HomeService.editAutoListApi(
+                                      fileId!, data, AppPreferences.authToken);
+                                  Get.snackbar("Success",
                                       "Auto List Updated Successfully",
                                       backgroundColor: Colors.green,
-                                      colorText: Colors.white,
-                                    );
-                                    dialogTitleController.clear();
-                                    for (var c in _controllers) {
-                                      c.clear();
-                                    }
-                                    setState(() {
-                                      _controllers = [TextEditingController()];
-                                      _focusNodes = [FocusNode()];
-                                    });
-                                  }
+                                      colorText: Colors.white);
                                 } else {
                                   await createAutoList(title, items);
                                 }
-                                Future.delayed(
-                                    const Duration(milliseconds: 600), () {
-                                  Navigator.pop(context);
-                                });
-                              } else {
-                                Get.snackbar(
-                                    "Warning", "Please add at least one item",
-                                    backgroundColor: Colors.red,
-                                    colorText: Colors.white);
+                                Navigator.pop(context);
                               }
                             }
                           },
@@ -268,49 +273,90 @@ class _AutolistViewState extends State<AutolistView> {
           children: [
             Row(
               children: [
-                _iconContainer(Icons.add_circle_outline_outlined, _addField),
-                const SizedBox(width: 16),
-                _iconContainer(
-                  _isListening ? Icons.mic : Icons.mic_none,
-                  _isListening ? _stopListening : _startListening,
-                ),
+                _iconContainer(_isListening ? Icons.mic : Icons.mic_none,
+                    _isListening ? _stopListening : _startListening),
               ],
             ),
             const SizedBox(height: 16),
             Container(
-              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: const Color(0xFFFAE6CF),
                 border: Border.all(color: Colors.black26),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CustomText(
-                    "Add Title",
-                    fontSize: 1.2,
-                    fontWeight: FontWeight.bold,
+                  // Table header
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black26),
+                      color: Colors.orange.withOpacity(0.3),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(6),
+                        topRight: Radius.circular(6),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 12),
+                      child: Row(
+                        children: const [
+                          Expanded(flex: 1, child: CustomText("No.")),
+                          Expanded(flex: 4, child: CustomText("Name")),
+                          Expanded(flex: 3, child: CustomText("Quantity")),
+                        ],
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 12),
+                  // Rows
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _controllers.length,
+                    itemCount: _nameControllers.length,
                     itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: TextField(
-                          controller: _controllers[index],
-                          focusNode: _focusNodes[index],
-                          decoration: InputDecoration(
-                            hintText: "Write or speak something...",
-                            filled: true,
-                            fillColor: const Color(0xFFF4F0E9),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(6),
+                      return Container(
+                        // decoration: BoxDecoration(
+                        //   border: Border.all(color: Colors.black),
+                        // ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Center(child: CustomText("${index + 1}")),
                             ),
-                          ),
+                            Expanded(
+                              flex: 4,
+                              child: TextField(
+                                controller: _nameControllers[index],
+                                focusNode: _nameFocusNodes[index],
+                                style: const TextStyle(
+                                    fontFamily: "zekton", fontSize: 14),
+                                decoration: const InputDecoration(
+                                    hintText: "Name",
+                                    border: InputBorder.none,
+                                    hintStyle: TextStyle(
+                                        fontFamily: "zekton", fontSize: 14),
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 8)),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 3,
+                              child: TextField(
+                                controller: _quantityControllers[index],
+                                focusNode: _quantityFocusNodes[index],
+                                style: const TextStyle(
+                                    fontFamily: "zekton", fontSize: 14),
+                                decoration: const InputDecoration(
+                                    hintText: "Quantity",
+                                    border: InputBorder.none,
+                                    hintStyle: TextStyle(
+                                        fontFamily: "zekton", fontSize: 14),
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 8)),
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     },
@@ -319,7 +365,7 @@ class _AutolistViewState extends State<AutolistView> {
               ),
             ),
             const SizedBox(height: 20),
-            if (_currentIndex > 0)
+            if (_currentRow > 0 || !_onNameField)
               SignInButton(text: "Back", onPressed: _goToPreviousField),
             const SizedBox(height: 8),
             SignInButton(text: "Next", onPressed: _goToNextField),

@@ -1,6 +1,7 @@
 import 'package:purpose_payment/dialog/delete_dialogbox.dart';
 import 'package:purpose_payment/dialog/logout_dialogbox.dart';
 import 'package:purpose_payment/screens/aboutus/aboutus.dart';
+import 'package:purpose_payment/screens/notification/notification_view.dart';
 import 'package:purpose_payment/screens/privacy_policy/privacy_policy.dart';
 import 'package:purpose_payment/screens/profile_view/profile_view.dart';
 import 'package:purpose_payment/screens/termandconditions/terms_and_condition.dart';
@@ -20,7 +21,11 @@ class SettingsView extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
           children: [
-            PrimaryButton(text: "Notifications", onPressed: () {}),
+            PrimaryButton(
+                text: "Notifications",
+                onPressed: () {
+                  Get.to(() => NotificationScreen());
+                }),
             10.verticalSpace,
             PrimaryButton(
                 text: "About us",

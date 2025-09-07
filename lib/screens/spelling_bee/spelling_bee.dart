@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:purpose_payment/screens/spelling_bee/widgets/spelling_bee_widget.dart';
 import 'package:purpose_payment/themes/app_theme.dart';
 import 'package:purpose_payment/widgets/custom_appbar.dart';
 
@@ -57,6 +59,9 @@ class SpellingBee extends StatelessWidget {
                           ],
                         ),
                         child: ListTile(
+                          onTap: () {
+                            Get.to(() => const SpellingBeeWidget());
+                          },
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 0, vertical: 2),
                           leading: Container(

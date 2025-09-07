@@ -64,13 +64,6 @@ class _HomeViewState extends State<HomeView> {
 
   DateTime? _lastCommandTime;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _pageController = PageController();
-  //   _controllers = [TextEditingController()];
-  //   _speech = stt.SpeechToText();
-  // }
   @override
   void initState() {
     super.initState();
@@ -297,33 +290,6 @@ class _HomeViewState extends State<HomeView> {
                             }
                           },
                         ),
-
-                        // SignInButton(
-                        //   text: "Create",
-                        //   onPressed: () {
-                        //     String title = titleController.text.trim();
-
-                        //     if (title.isNotEmpty) {
-                        //       List<String> items = _controllers
-                        //           .map((c) => c.text.trim())
-                        //           .where((text) => text.isNotEmpty)
-                        //           .toList();
-
-                        //       if (items.isNotEmpty) {
-                        //         createAutoList(title, items);
-
-                        //         Future.delayed(const Duration(seconds: 1), () {
-                        //           Navigator.pop(context);
-                        //         });
-                        //       } else {
-                        //         Get.snackbar(
-                        //             "Warning", "Please add at least one item",
-                        //             backgroundColor: Colors.red,
-                        //             colorText: Colors.white);
-                        //       }
-                        //     }
-                        //   },
-                        // )
                       ],
                     ),
                   );

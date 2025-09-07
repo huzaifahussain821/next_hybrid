@@ -1,3 +1,4 @@
+import 'package:purpose_payment/screens/autolist_view/autolist_view.dart';
 import 'package:purpose_payment/screens/home/home_view.dart';
 import 'package:purpose_payment/utilities/app_exports.dart';
 import 'package:purpose_payment/widgets/custom_text.dart';
@@ -21,7 +22,8 @@ class SavedFilesDetailsView extends StatelessWidget {
             children: [
               GestureDetector(
                   onTap: () {
-                    Get.to(() => const HomeView(view: "edit"), arguments: file);
+                    Get.to(() => const AutolistView(view: "edit"),
+                        arguments: file);
                   },
                   child: Icon(Icons.edit, color: Colors.black)),
               SizedBox(width: 8),

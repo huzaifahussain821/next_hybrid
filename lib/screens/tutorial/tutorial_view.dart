@@ -13,11 +13,11 @@ class TutorialView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppThemes.primaryColor,
+      appBar: AppBarWidget.backAppBar("Tutorial"),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            AppBarWidget.backAppBar("Tutorial"),
             Container(
               decoration: BoxDecoration(
                 color: const Color(0xFFFAE6CF),

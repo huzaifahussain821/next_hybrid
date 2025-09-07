@@ -25,6 +25,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppThemes.primaryColor,
+      appBar: AppBarWidget.backAppBar(
+        widget.view == "create" ? "Create Profile" : "Edit Profile",
+      ),
       body: Obx(() => Stack(
             children: [
               SingleChildScrollView(
@@ -32,11 +35,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
-                      AppBarWidget.backAppBar(
-                        widget.view == "create"
-                            ? "Create Profile"
-                            : "Edit Profile",
-                      ),
                       // Profile image
                       GestureDetector(
                         onTap: controller.pickImage,
